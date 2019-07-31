@@ -1,4 +1,7 @@
 const http = require('http');
+const axios = require('axios')
+const mappings = JSON.parse(process.env.MAPPINGS)
+
 
 http.createServer((request, response) => {
   const { headers, method, url } = request;
@@ -7,11 +10,13 @@ http.createServer((request, response) => {
     console.error(err);
   }).on('data', (chunk) => {
     body.push(chunk);
-  }).on('end', () => {
+  }).on('end', async () => {
     body = Buffer.concat(body).toString();
     const hookInfo = JSON.parse(body)
-    const gre=23;
-    // At this point, we have the headers, method, url and body, and can now
-    // do whatever we need to in order to respond to this request.
+    const repoFullName = hookInfo.repository.full_name;
+    const branchRef = hookInfo.ref;
+    console.log({repoFullName,branchRef})
+    const target = mappings.filter(r => r.repoFullName===repoFullName && r.branchRef===branchRef)[0];
+    await axios.post(target.jenkinsURL);
   });
-}).listen(4433);
+}).listen(1080);
