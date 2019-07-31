@@ -1,0 +1,9 @@
+{
+  "name": "host-control",
+  "version": "0.0.0",
+  "main": "app.js",
+  "author": {
+    "name": "piscos"
+  },
+  "dependencies": {}
+}
