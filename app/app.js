@@ -17,7 +17,7 @@ http.createServer((request, response) => {
     const branchRef = hookInfo.ref;
     console.log({repoFullName,branchRef})
     const target = mappings.filter(r => r.repoFullName===repoFullName && r.branchRef===branchRef)[0];
-    console.log("posting: ",target)
+    console.log("posting: ",target.jenkinsURL)
     await axios.post(target.jenkinsURL);
     response.end();
   });
