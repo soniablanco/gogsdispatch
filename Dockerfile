@@ -12,5 +12,6 @@ COPY app /app
 COPY syncToSVN.sh syncToSVN.sh 
 COPY docker-entrypoint.sh docker-entrypoint.sh 
 RUN chmod +x /docker-entrypoint.sh
+RUN chmod +x /syncToSVN.sh
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
