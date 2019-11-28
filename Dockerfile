@@ -9,4 +9,8 @@ RUN cd /app \
 
 COPY app /app
 
-ENTRYPOINT ["node","/app/app.js"]
+COPY syncToSVN.sh syncToSVN.sh 
+COPY docker-entrypoint.sh docker-entrypoint.sh 
+RUN chmod +x /docker-entrypoint.sh
+
+ENTRYPOINT ["/docker-entrypoint.sh"]
