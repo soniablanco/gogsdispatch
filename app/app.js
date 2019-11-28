@@ -13,16 +13,23 @@ http.createServer((request, response) => {
     body.push(chunk);
   }).on('end', async () => {
     body = Buffer.concat(body).toString();
+
     const hookInfo = JSON.parse(body)
     const repoFullName = hookInfo.repository.full_name;
     const branchRef = hookInfo.ref;
     const branchName = hookInfo.branchName
+
+
     console.log({repoFullName,branchRef})
     console.log(mappings.length)
+
     const nodeInfo = mappings.filter(r => r.repoFullName===repoFullName)[0];
+
     const svnTargetBranch = branchName=='master' ? 'trunk' : branchName
     const svnTargetURL =  nodeInfo.svnRepoBaseURL + svnTargetBranch
-    execSyncFx(hookInfo.gitUrl,hookInfo.branchName,svnTargetURL)
+
+    await execSyncFx(hookInfo.gitUrl,hookInfo.branchName,svnTargetURL)
+
     const targetJenkinsJob = nodeInfo.jenkins.filter(r => r.branchRef===branchRef)[0];
     console.log("posting: ",targetJenkinsJob.jenkinsURL)
     await axios.post(targetJenkinsJob.jenkinsURL);
