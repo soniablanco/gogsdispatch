@@ -1,6 +1,7 @@
 const http = require('http');
 const axios = require('axios')
 const mappings = JSON.parse(process.env.MAPPINGS)
+const { execSyncFx} = require('./execSyncFx.js');
 
 
 http.createServer((request, response) => {
@@ -15,11 +16,16 @@ http.createServer((request, response) => {
     const hookInfo = JSON.parse(body)
     const repoFullName = hookInfo.repository.full_name;
     const branchRef = hookInfo.ref;
+    const branchName = hookInfo.branchName
     console.log({repoFullName,branchRef})
     console.log(mappings.length)
-    const target = mappings.filter(r => r.repoFullName===repoFullName && r.branchRef===branchRef)[0];
-    console.log("posting: ",target.jenkinsURL)
-    await axios.post(target.jenkinsURL);
+    const nodeInfo = mappings.filter(r => r.repoFullName===repoFullName)[0];
+    const svnTargetBranch = branchName=='master' ? 'trunk' : branchName
+    const svnTargetURL =  nodeInfo.svnRepoBaseURL + svnTargetBranch
+    execSyncFx(hookInfo.gitUrl,hookInfo.branchName,svnTargetURL)
+    const targetJenkinsJob = nodeInfo.jenkins.filter(r => r.branchRef===branchRef)[0];
+    console.log("posting: ",targetJenkinsJob.jenkinsURL)
+    await axios.post(targetJenkinsJob.jenkinsURL);
     response.end();
   });
 }).listen(80);
