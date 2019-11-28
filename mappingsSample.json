@@ -1,7 +1,7 @@
 [
     {
       "gitRepoFullName": "gitRepoFullName",
-      "svnRepoBaseURL": "svnRepoBaseURL",
+      "svnPath": "svnPath",
       "jenkins":[
           {
               "branchRef": "refs/heads/internaldev",

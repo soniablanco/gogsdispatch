@@ -15,24 +15,40 @@ http.createServer((request, response) => {
     body = Buffer.concat(body).toString();
 
     const hookInfo = JSON.parse(body)
-    const repoFullName = hookInfo.repository.full_name;
-    const branchRef = hookInfo.ref;
-    const branchName = hookInfo.branchName
-
 
     console.log({repoFullName,branchRef})
-    console.log(mappings.length)
 
-    const nodeInfo = mappings.filter(r => r.repoFullName===repoFullName)[0];
+    const mappingQuery =  mappings.filter(r => r.repoFullName===hookInfo.repository.full_name)
+    if (mappingQuery.length==0){
+      response.end();
+      return
+    }
 
-    const svnTargetBranch = branchName=='master' ? 'trunk' : branchName
-    const svnTargetURL =  nodeInfo.svnRepoBaseURL + svnTargetBranch
+    const mappingNodeInfo = mappingQuery[0];
+    await execGit2SVNSync(mappingNodeInfo, hookInfo);
 
-    await execSyncFx(hookInfo.gitUrl,hookInfo.branchName,svnTargetURL)
-
-    const targetJenkinsJob = nodeInfo.jenkins.filter(r => r.branchRef===branchRef)[0];
+    const targetJenkinsJobQuery = mappingNodeInfo.jenkins.filter(r => r.branchRef===hookInfo.ref)
+    if (mappingQuery.length==0){
+      response.end();
+      return
+    }
+    const targetJenkinsJob = targetJenkinsJobQuery[0];
     console.log("posting: ",targetJenkinsJob.jenkinsURL)
     await axios.post(targetJenkinsJob.jenkinsURL);
     response.end();
   });
 }).listen(80);
+
+async function execGit2SVNSync(mappingNodeInfo, hookInfo) {
+  const gitBranchName = hookInfo.ref//remove refheads from branchref
+  const svnTargetPath = process.env.SVN_BASEURL + mappingNodeInfo.svnPath;
+  let svnTargetURL = '';
+  if (gitBranchName === 'master') {
+    svnTargetURL = svnTargetPath + 'trunk';
+  }
+  else {
+    svnTargetURL = svnTargetPath + 'branches/' + gitBranchName;
+  }
+  const gitUrl = process.env.GIT_SERVER + hookInfo.repository.full_name + '.git';
+  await execSyncFx(gitUrl, hookInfo.branchName, svnTargetURL);
+}
