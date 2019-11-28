@@ -1,0 +1,17 @@
+[
+    {
+      "gitRepoFullName": "gitRepoFullName",
+      "svnRepoBaseURL": "svnRepoBaseURL",
+      "jenkins":[
+          {
+              "branchRef": "refs/heads/internaldev",
+              "jenkinsURL": "targetjenkinsurl"
+          },
+          {
+              "branchRef": "refs/heads/master",
+              "jenkinsURL": "targetjenkinsurl"
+          }
+      ]
+    }
+  ]
+    
