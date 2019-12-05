@@ -26,6 +26,10 @@ http.createServer((request, response) => {
     const mappingNodeInfo = mappingQuery[0];
     await execGit2SVNSync(mappingNodeInfo, hookInfo);
 
+    if (!mappingNodeInfo.jenkins){
+      response.end();
+      return
+    }
     const targetJenkinsJobQuery = mappingNodeInfo.jenkins.filter(r => r.branchRef===hookInfo.ref)
     if (mappingQuery.length==0){
       response.end();

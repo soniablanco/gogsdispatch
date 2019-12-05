@@ -20,13 +20,13 @@ const  execSyncFx = async (gitUrl,gitBranch,targetSVNUrl) => {
           });
           process.on('exit', function (code, signal) {
             if (code) {
-              console.log('ffmpeg videoFileStream error');
+              console.log('error');
               const jsonError = JSON.stringify({code,signal,result,errorResult})
               console.log(jsonError)
               reject(jsonError)
               
             } else if (signal) {
-              console.log('ffmpeg videoFileStream error');
+              console.log('error');
               const jsonError = JSON.stringify({code,signal,result,errorResult})
               console.log(jsonError)
               reject(jsonError)
