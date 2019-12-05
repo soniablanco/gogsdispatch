@@ -16,9 +16,8 @@ http.createServer((request, response) => {
 
     const hookInfo = JSON.parse(body)
 
-    console.log({repoFullName,branchRef})
-
-    const mappingQuery =  mappings.filter(r => r.repoFullName===hookInfo.repository.full_name)
+    console.log("hookInfo.repository.full_name: ",hookInfo.repository.full_name)
+    const mappingQuery =  mappings.filter(r => r.gitRepoFullName===hookInfo.repository.full_name)
     if (mappingQuery.length==0){
       response.end();
       return
@@ -40,7 +39,7 @@ http.createServer((request, response) => {
 }).listen(80);
 
 async function execGit2SVNSync(mappingNodeInfo, hookInfo) {
-  const gitBranchName = hookInfo.ref//remove refheads from branchref
+  const gitBranchName = hookInfo.ref.replace('refs/heads/','')
   const svnTargetPath = process.env.SVN_BASEURL + mappingNodeInfo.svnPath;
   let svnTargetURL = '';
   if (gitBranchName === 'master') {
@@ -50,5 +49,8 @@ async function execGit2SVNSync(mappingNodeInfo, hookInfo) {
     svnTargetURL = svnTargetPath + 'branches/' + gitBranchName;
   }
   const gitUrl = process.env.GIT_SERVER + hookInfo.repository.full_name + '.git';
-  await execSyncFx(gitUrl, hookInfo.branchName, svnTargetURL);
+  console.log("svnTargetURL: ",svnTargetURL)
+  console.log("gitUrl: ",gitUrl)
+  console.log("gitBranchName: ",gitBranchName)
+  await execSyncFx(gitUrl, gitBranchName, svnTargetURL);
 }

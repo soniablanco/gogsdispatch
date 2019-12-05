@@ -1,17 +1,7 @@
 [
     {
-      "gitRepoFullName": "gitRepoFullName",
-      "svnPath": "svnPath",
-      "jenkins":[
-          {
-              "branchRef": "refs/heads/internaldev",
-              "jenkinsURL": "targetjenkinsurl"
-          },
-          {
-              "branchRef": "refs/heads/master",
-              "jenkinsURL": "targetjenkinsurl"
-          }
-      ]
+      "gitRepoFullName": "TDS/automation.git",
+      "svnPath": "mobile/automation/"
     }
-  ]
+ ]
     
