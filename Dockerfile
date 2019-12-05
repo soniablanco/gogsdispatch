@@ -1,5 +1,7 @@
 FROM node:8.16.0-alpine
 
+RUN apk add --no-cache --upgrade bash git openssh subversion
+
 RUN mkdir /app/
 COPY app/package.json  /app/package.json
 
