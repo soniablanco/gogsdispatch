@@ -24,6 +24,7 @@ cd ..
 cd git_source
 currentHash=$(git rev-parse HEAD)
 changelog=$(git log --pretty=format:"%h%x09%an%x09%s" $previousHash...$currentHash)
+#check if changelog is empty and changelog=$(git log -1 --pretty=format:"%h%x09%an%x09%s")
 echo $changelog
 echo "$currentHash" > syncHash.ddl
 cd ..
