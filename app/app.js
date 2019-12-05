@@ -52,5 +52,5 @@ async function execGit2SVNSync(mappingNodeInfo, hookInfo) {
   console.log("svnTargetURL: ",svnTargetURL)
   console.log("gitUrl: ",gitUrl)
   console.log("gitBranchName: ",gitBranchName)
-  await execSyncFx(gitUrl, gitBranchName, svnTargetURL);
+  await execSync(gitUrl, gitBranchName, svnTargetURL);
 }
