@@ -1,7 +1,7 @@
 const http = require('http');
 const axios = require('axios')
 const mappings = JSON.parse(process.env.MAPPINGS)
-const { execSyncFx} = require('./execSyncFx.js');
+const { execSync} = require('./execSync');
 
 
 http.createServer((request, response) => {
