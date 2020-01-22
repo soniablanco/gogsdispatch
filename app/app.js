@@ -48,6 +48,9 @@ async function execGit2SVNSync(mappingNodeInfo, hookInfo) {
   let svnTargetURL = '';
   if (gitBranchName === 'master') {
     svnTargetURL = svnTargetPath + 'trunk';
+    if(mappingNodeInfo.svnTrunkException){
+      svnTargetURL += mappingNodeInfo.svnTrunkException;
+    }
   }
   else {
     svnTargetURL = svnTargetPath + 'branches/' + gitBranchName;
