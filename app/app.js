@@ -29,7 +29,9 @@ http.createServer((request, response) => {
 
     let timestamp = await execGit2SVNSync(mappingNodeInfo, hookInfo);
 
-    process.env.SVN_REVISION = readRevision(timestamp);
+    const revision = readRevision(timestamp);
+    
+    console.log(revision, err)
 
     if (!mappingNodeInfo.jenkins){
       response.end();
@@ -42,7 +44,7 @@ http.createServer((request, response) => {
     }
     const targetJenkinsJob = targetJenkinsJobQuery[0];
     console.log("posting: ",targetJenkinsJob.jenkinsURL)
-    await axios.post(targetJenkinsJob.jenkinsURL);
+    await axios.post(targetJenkinsJob.jenkinsURL + "&revision=" + revision);
     response.end();
   });
 }).listen(80);
@@ -56,6 +58,7 @@ async function readRevision(timestamp){
     }
     try {
       revision = JSON.parse(timestamp)
+      console.log("Reading revision value", revision)
     } catch(err) {
         console.log('Error parsing JSON string:', err)
     }
@@ -80,5 +83,5 @@ async function execGit2SVNSync(mappingNodeInfo, hookInfo) {
   console.log("svnTargetURL: ",svnTargetURL)
   console.log("gitUrl: ",gitUrl)
   console.log("gitBranchName: ",gitBranchName)
-  await execSync(gitUrl, gitBranchName, svnTargetURL);
+  return await execSync(gitUrl, gitBranchName, svnTargetURL);
 }
