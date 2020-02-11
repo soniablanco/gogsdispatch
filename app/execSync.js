@@ -1,6 +1,9 @@
 'use strict';
 var spawn = require('child_process').spawn;
 
+var fs = require("fs");
+export var latestRevision = fs.readFileSync("./svnRevision.txt");
+
 const  execSyncFx = async (gitUrl,gitBranch,targetSVNUrl) => {   
 
   return new Promise(function (resolve, reject) {
