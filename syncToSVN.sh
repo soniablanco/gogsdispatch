@@ -62,7 +62,7 @@ if [[ $(svn status) ]]; then
     echo "Error still files!" 1>&2
     exit 64
 else
-    jq --arg timestamp $4 --arg revision $(svn info --show-item revision) '.[$key] += [$revision]' revision.json
+    jq --arg key $4 --arg value $(svn info --show-item revision) '.[$key] += [$value]' revision.json
     echo "suceeded"
 fi
 cd ..
