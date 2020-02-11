@@ -1,5 +1,7 @@
 const http = require('http');
-const axios = require('axios')
+const axios = require('axios');
+const fs = require('fs')
+
 const mappings = JSON.parse(process.env.MAPPINGS)
 const { execSync} = require('./execSync');
 
@@ -24,7 +26,10 @@ http.createServer((request, response) => {
     }
 
     const mappingNodeInfo = mappingQuery[0];
-    await execGit2SVNSync(mappingNodeInfo, hookInfo);
+
+    let timestamp = await execGit2SVNSync(mappingNodeInfo, hookInfo);
+
+    process.env.SVN_REVISION = readRevision(timestamp);
 
     if (!mappingNodeInfo.jenkins){
       response.end();
@@ -41,6 +46,22 @@ http.createServer((request, response) => {
     response.end();
   });
 }).listen(80);
+
+async function readRevision(timestamp){
+  var revision = "";
+  fs.readFile('revision.json', 'utf8', (err, timestamp) => {
+    if (err) {
+        console.log("Error reading revision file:", err)
+        return
+    }
+    try {
+      revision = JSON.parse(timestamp)
+    } catch(err) {
+        console.log('Error parsing JSON string:', err)
+    }
+})
+return revision;
+}
 
 async function execGit2SVNSync(mappingNodeInfo, hookInfo) {
   const gitBranchName = hookInfo.ref.replace('refs/heads/','')

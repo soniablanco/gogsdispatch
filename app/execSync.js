@@ -4,11 +4,13 @@ var spawn = require('child_process').spawn;
 const  execSyncFx = async (gitUrl,gitBranch,targetSVNUrl) => {   
 
   return new Promise(function (resolve, reject) {
+          let timestamp = time.getTime();
           var process = spawn('/syncToSVN.sh'
           , [
                 gitUrl
               , gitBranch
               , targetSVNUrl
+              , timestamp
           ]);
           var result = '';
           process.stdout.on('data', (data) => {
@@ -31,7 +33,7 @@ const  execSyncFx = async (gitUrl,gitBranch,targetSVNUrl) => {
               console.log(jsonError)
               reject(jsonError)
             } else {
-              resolve()
+              resolve(timestamp)
             }        
           });    
         })
