@@ -51,14 +51,14 @@ http.createServer((request, response) => {
 
 async function readRevision(timestamp){
   var revision = "";
-  fs.readFile('revision.json', 'utf8', (err, timestamp) => {
+  fs.readFile('revision.json', 'utf8', (err, jsonString) => {
     if (err) {
         console.log("Error reading revision file:", err)
         return
     }
     try {
-      revision = JSON.parse(timestamp)
-      console.log("Reading revision value", revision)
+      revision = JSON.parse(jsonString)[timestamp]
+      console.log("Reading revision value", jsonString)
     } catch(err) {
         console.log('Error parsing JSON string:', err)
     }
