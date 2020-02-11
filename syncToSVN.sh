@@ -62,6 +62,7 @@ if [[ $(svn status) ]]; then
     echo "Error still files!" 1>&2
     exit 64
 else
+    echo $(svn info -r HEAD) >> 'svnRevision.txt'
     echo "suceeded"
 fi
 cd ..
