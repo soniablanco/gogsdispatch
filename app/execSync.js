@@ -1,7 +1,7 @@
 'use strict';
 var spawn = require('child_process').spawn;
 
-const  execSyncFx = async (gitUrl,gitBranch,targetSVNUrl) => {   
+const  execSyncFx = async (gitUrl,gitBranch,targetSVNUrl,sessionFolderId) => {   
 
   return new Promise(function (resolve, reject) {
           var process = spawn('/syncToSVN.sh'
@@ -9,6 +9,7 @@ const  execSyncFx = async (gitUrl,gitBranch,targetSVNUrl) => {
                 gitUrl
               , gitBranch
               , targetSVNUrl
+              , sessionFolderId
           ]);
           var result = '';
           process.stdout.on('data', (data) => {

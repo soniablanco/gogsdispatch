@@ -2,6 +2,8 @@ const http = require('http');
 const axios = require('axios')
 const fs = require('fs');
 const util = require('util');
+const uuidv4 = require('uuid/v4')
+const rimraf = require("rimraf");
 const readFileAsync = util.promisify(fs.readFile);
 const mappings = JSON.parse(process.env.MAPPINGS)
 const { execSync} = require('./execSync');
@@ -27,7 +29,11 @@ http.createServer((request, response) => {
     }
 
     const mappingNodeInfo = mappingQuery[0];
-    await execGit2SVNSync(mappingNodeInfo, hookInfo);
+    const sessionFolderId = uuidv4()
+    await execGit2SVNSync(mappingNodeInfo, hookInfo,sessionFolderId);
+    const revisionNo = await readFileAsync(`/${sessionFolderId}/target_folder/svnRevision.txt`,'utf-8')
+    rimraf.sync(`/${sessionFolderId}`);
+    console.log(`svnNo: ${revisionNo}`)
 
     if (!mappingNodeInfo.jenkins){
       response.end();
@@ -45,7 +51,7 @@ http.createServer((request, response) => {
   });
 }).listen(80);
 
-async function execGit2SVNSync(mappingNodeInfo, hookInfo) {
+async function execGit2SVNSync(mappingNodeInfo, hookInfo,sessionFolderId) {
   const gitBranchName = hookInfo.ref.replace('refs/heads/','')
   const svnTargetPath = process.env.SVN_BASEURL + mappingNodeInfo.svnPath;
   let svnTargetURL = '';
@@ -62,12 +68,6 @@ async function execGit2SVNSync(mappingNodeInfo, hookInfo) {
   console.log("svnTargetURL: ",svnTargetURL)
   console.log("gitUrl: ",gitUrl)
   console.log("gitBranchName: ",gitBranchName)
-  await execSync(gitUrl, gitBranchName, svnTargetURL);
-  const revisionNo = await readSvnRevisionAsync();
-  return revisionNo;
+  await execSync(gitUrl, gitBranchName, svnTargetURL,sessionFolderId);
 }
-async function readSvnRevisionAsync(){  
-  const revisionNoText = await readFileAsync("/target_folder/svnRevision.txt",'utf-8')
-  console.log(revisionNoText)
-  return revisionNoText
-}
+

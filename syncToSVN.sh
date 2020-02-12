@@ -3,7 +3,8 @@
 set -e
 
 
-
+mkdir $4
+cd $4
 
 rm -r -f target_folder
 rm -r -f svn_source
@@ -66,4 +67,3 @@ else
     echo "suceeded"
 fi
 cd ..
-#rm -r target_folder
