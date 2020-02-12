@@ -66,4 +66,4 @@ else
     echo "suceeded"
 fi
 cd ..
-rm -r target_folder
+#rm -r target_folder
