@@ -63,7 +63,7 @@ if [[ $(svn status) ]]; then
     echo "Error still files!" 1>&2
     exit 64
 else
-    svn update --username $SVN_USERNAME --password $SVN_PASSWORD  --non-interactive $3 svn_source
+    svn update --username $SVN_USERNAME --password $SVN_PASSWORD  --non-interactive
     svn info |grep Revision: |cut -c11- > svnRevision.txt
     echo "suceeded"
 fi
