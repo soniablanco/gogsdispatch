@@ -31,9 +31,9 @@ http.createServer((request, response) => {
     const mappingNodeInfo = mappingQuery[0];
     const sessionFolderId = uuidv4()
     await execGit2SVNSync(mappingNodeInfo, hookInfo,sessionFolderId);
-    const revisionNo = await readFileAsync(`/${sessionFolderId}/target_folder/svnRevision.txt`,'utf-8')
+    const svnRevisionNo = await readFileAsync(`/${sessionFolderId}/target_folder/svnRevision.txt`,'utf-8')
     rimraf.sync(`/${sessionFolderId}`);
-    console.log(`svnNo: ${revisionNo}`)
+    console.log(`svnNo: ${svnRevisionNo}`)
 
     if (!mappingNodeInfo.jenkins){
       response.end();
@@ -45,8 +45,9 @@ http.createServer((request, response) => {
       return
     }
     const targetJenkinsJob = targetJenkinsJobQuery[0];
-    console.log("posting: ",targetJenkinsJob.jenkinsURL)
-    await axios.post(targetJenkinsJob.jenkinsURL);
+    const urlWithParameters=`${targetJenkinsJob.jenkinsURL}&SVN_REVISION_NO=${svnRevisionNo}`
+    console.log("posting: ",urlWithParameters)
+    await axios.post(urlWithParameters);
     response.end();
   });
 }).listen(80);
