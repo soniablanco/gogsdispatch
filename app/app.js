@@ -1,5 +1,8 @@
 const http = require('http');
 const axios = require('axios')
+const fs = require('fs');
+const util = require('util');
+const readFileAsync = util.promisify(fs.readFile);
 const mappings = JSON.parse(process.env.MAPPINGS)
 const { execSync} = require('./execSync');
 
@@ -60,4 +63,11 @@ async function execGit2SVNSync(mappingNodeInfo, hookInfo) {
   console.log("gitUrl: ",gitUrl)
   console.log("gitBranchName: ",gitBranchName)
   await execSync(gitUrl, gitBranchName, svnTargetURL);
+  const revisionNo = await readSvnRevisionAsync();
+  return revisionNo;
+}
+async function readSvnRevisionAsync(){  
+  const revisionNoText = await readFileAsync("/target_folder/svnRevision.txt",'utf-8')
+  console.log(revisionNoText)
+  return revisionNoText
 }
