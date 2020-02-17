@@ -12,7 +12,7 @@ rm -r -f git_source
 
 
 git clone --branch $2 --single-branch $1 git_source
-svn mkdir  --username $SVN_USERNAME --password $SVN_PASSWORD -m 'creating branch'  $3 || true
+svn mkdir  --username $SVN_USERNAME --password $SVN_PASSWORD --parents -m 'creating branch'  $3 || true
 svn checkout --username $SVN_USERNAME --password $SVN_PASSWORD  --non-interactive $3 svn_source
 cd svn_source
 previousHash=""
