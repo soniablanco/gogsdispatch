@@ -40,7 +40,7 @@ http.createServer((request, response) => {
       return
     }
     const targetJenkinsJobQuery = mappingNodeInfo.jenkins.filter(r => r.branchRef===hookInfo.ref)
-    if (mappingQuery.length==0){
+    if (targetJenkinsJobQuery.length==0){
       response.end();
       return
     }
