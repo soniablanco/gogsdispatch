@@ -39,12 +39,16 @@ http.createServer((request, response) => {
       response.end();
       return
     }
+    
+    console.log(`hookInfo ref: ${hookInfo.ref}`)
     const targetJenkinsJobQuery = mappingNodeInfo.jenkins.filter(r => r.branchRef===hookInfo.ref)
+    console.log(`Target jenkins job: ${targetJenkinsJobQuery}`)
     if (targetJenkinsJobQuery.length==0){
       response.end();
       return
     }
     const targetJenkinsJob = targetJenkinsJobQuery[0];
+    
     const urlWithParameters=`${targetJenkinsJob.jenkinsURL}&SVN_REVISION_NO=${svnRevisionNo}`
     console.log("posting: ",urlWithParameters)
     await axios.post(urlWithParameters);
